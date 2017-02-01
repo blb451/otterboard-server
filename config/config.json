@@ -1,0 +1,12 @@
+{
+  "test": {
+    "PORT": 3090,
+    "MONGODB_URI": "mongodb://localhost:auth/auth",
+    "JWT_SECRET": "asdfasdfa4ff3wg45wgetrgergg45"
+  },
+  "development": {
+    "PORT": 3090,
+    "MONGODB_URI": "mongodb://localhost:auth/auth",
+    "JWT_SECRET": "lsdifgjdsg8sds34ho4h3384j3p4j"
+  }
+}
