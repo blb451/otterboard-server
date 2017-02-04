@@ -36,7 +36,7 @@ module.exports = function(app) {
       sale: false,
       in_stock: true,
       price: req.body.price,
-      _user: req._user_id
+      _user: req.body._user
     });
     product.save().then((doc) => {
       res.send(doc);
