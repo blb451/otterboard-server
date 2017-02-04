@@ -30,12 +30,12 @@ module.exports = function(app) {
 
   app.post('/products', requireAuth, (req, res) => {
     var product = new Product({
-      name: req.name,
-      category: req.category,
-      origin: req.origin,
+      name: req.body.name,
+      category: req.body.category,
+      origin: req.body.origin,
       sale: false,
       in_stock: true,
-      price: req.price,
+      price: req.body.price,
       _user: req._user_id
     });
     product.save().then((doc) => {
