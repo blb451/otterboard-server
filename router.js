@@ -28,6 +28,23 @@ module.exports = function(app) {
     })
   });
 
+  app.post('/products', requireAuth, (req, res) => {
+    var product = new Product({
+      name: req.name,
+      category: req.category,
+      origin: req.origin,
+      sale: false,
+      in_stock: true,
+      price: req.price,
+      _user: req._user_id
+    });
+    product.save().then((doc) => {
+      res.send(doc);
+    }, (err) => {
+      res.status(400).send(err);
+    });
+  });
+
   // PURCHASE
   app.post('/purchases', requireAuth, (req, res) => {
     var purchase = new Purchase({
