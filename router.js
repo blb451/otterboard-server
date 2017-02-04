@@ -48,8 +48,8 @@ module.exports = function(app) {
   // PURCHASE
   app.post('/purchases', requireAuth, (req, res) => {
     var purchase = new Purchase({
-      _product: req.product._id,
-      _user: req.user._id,
+      _product: req.body._product,
+      _user: req.body._user,
       quantity: 1
     });
     purchase.save().then((doc) => {
