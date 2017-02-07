@@ -61,9 +61,10 @@ module.exports = function(app) {
   });
 
   app.get('/purchases', requireAuth, (req, res) => {
+
     Purchase.find({
       _user: req.user._id
-    }).then((purchases) => {res.send({purchases})
+    }).populate('_product').then((purchases) => {res.send({purchases})
     }, (err) => {
       res.status(400).send(err);
     })
@@ -82,7 +83,7 @@ module.exports = function(app) {
         return res.status(404).send();
       }
       res.send({purchase});
-    }).cathc((err) => {
+    }).catch((err) => {
       res.status(400).send();
     });
   });
