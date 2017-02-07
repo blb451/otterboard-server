@@ -36,7 +36,7 @@ module.exports = function(app) {
       sale: false,
       in_stock: true,
       price: req.body.price,
-      _user: req.body._user
+      _user: req.user.id
     });
     product.save().then((doc) => {
       res.send(doc);
@@ -47,9 +47,10 @@ module.exports = function(app) {
 
   // PURCHASE
   app.post('/purchases', requireAuth, (req, res) => {
+    const productId = req.body.id
     var purchase = new Purchase({
-      _product: req.body._product,
-      _user: req.body._user,
+      _product: req.body.productid,
+      _user: req.user.id,
       quantity: 1
     });
     purchase.save().then((doc) => {
