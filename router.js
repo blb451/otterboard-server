@@ -96,7 +96,7 @@ module.exports = function(app) {
     Purchase.findOneAndRemove({
       _id: id,
       _user: req.user._id
-    }).then((purchase) => {
+    }).populate('_product').then((purchase) => {
       if (!purchase) {
         return res.status(404).send();
       }
