@@ -49,7 +49,7 @@ module.exports = function(app) {
   app.post('/purchases', (req, res) => {
     var purchase = new Purchase({
       _product: req.body.productid,
-      _user: req.user._id,
+      _user: req.body.userid,
       quantity: 1
     });
     purchase.save().then((doc) => {
