@@ -22,7 +22,7 @@ module.exports = function(app) {
 
   // PRODUCTS
   app.get('/products', requireAuth, (req, res) => {
-    Product.find().then((products) => {res.send({products})
+    Product.find().populate('_user').then((products) => {res.send({products})
     }, (err) => {
       res.status(400).send(err);
     })
