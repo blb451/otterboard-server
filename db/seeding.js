@@ -1,74 +1,85 @@
-var ProductModel = require('mongoose').model('Product');
-var PurchaseModel = require('mongoose').model('Purchase');
-var UserModel = require('mongoose').model('User');
+  const {ObjectID} = require('mongodb');
+  const jwt = require('jsonwebtoken');
+  const {User} = require('./../models/user');
+  const {Product} = require('./../models/product');
+  const {Purchase} = require('./../models/purchase');
 
-function seedProducts(req, res) {
+  const userOneId = new ObjectID();
+  const userTwoId = new ObjectID();
 
-  const products = [
-    { name: 'name',
-     category: 'category',
-     origin: 'origin',
-     sale: false,
-     in_stock: true,
-     price: 1,
-     _user: 1 },
-    { name: 'name',
-     category: 'category',
-     origin: 'origin',
-     sale: false,
-     in_stock: true,
-     price: 1,
-     _user: 1 },
-    { name: 'name',
-     category: 'category',
-     origin: 'origin',
-     sale: false,
-     in_stock: true,
-     price: 1,
-     _user: 1 },
-  ];
+  const productOneId = new ObjectID();
+  const productTwoId = new ObjectID();
 
-  for (product of products) {
-    var newProduct = new Product(product);
-    newProduct.save();
-  }
-}
+  const users = [{
+    _id: userOneId,
+    email: 'test@example.com',
+    password: 'userOnePass',
+    tokens: [{
+      access: 'auth',
+      token: jwt.sign({_id: userOneId, access: 'auth'}, process.env.JWT_SECRET).toString()
+    }]
+  }, {
+    _id: userTwoId,
+    email: 'test2@example.com',
+    password: 'userTwoPass',
+    tokens: [{
+      access: 'auth',
+      token: jwt.sign({_id: userTwoId, access: 'auth'}, process.env.JWT_SECRET).toString()
+    }]
+  }];
 
-  function seedPurchases(req, res) {
+  const populateUsers = (done) => {
+    User.remove({}).then(() => {
+      var userOne = new User(users[0]).save();
+      var userTwo = new User(users[1]).save();
 
-    const purchases = [
-      { quantity: 1,
-       _product: 1,
-       _user: 1 },
-      { quantity: 1,
-      _product: 1,
-      _user: 1 },
-      { quantity: 1,
-       _product: 1,
-       _user: 1 }
-    ];
-
-    for (purchase of purchases) {
-      var newPurchase = new Purchase(purchase);
-      newPurchase.save();
-    }
+      return Promise.all([userOne, userTwo])
+    }).then(() => done());
   };
 
-  function seedUsers(req, res) {
+  const products = [{
+     _id: productOneId,
+     name: 'name',
+     category: 'category',
+     origin: 'origin',
+     price: 1,
+     _user: userOneId
+   },
+   {
+    _id: productTwoId,
+    name: 'name',
+    category: 'category',
+    origin: 'origin',
+    price: 1,
+    _user: userTwoId
+  }];
 
-    const users = [
-      { email: 'test@test.com',
-       password: 'unique1' },
-      { email: 'test@test.com',
-      password: 'unique1' },
-      { email: 'test@test.com',
-       password: 'unique1' },
-    ];
-
-    for (user of users) {
-      var newUser = new User(user);
-      newUser.save();
-    }
+  const populateProducts = (done) => {
+    Product.remove({}).then(() => {
+      return Product.insertMany(products);
+    }).then(() => done());
   };
 
-  res.send('Database seeded!');
+  const purchases = [{
+     _id: new ObjectID(),
+     product: productOneId,
+     _user: userOneId
+   },
+   {
+     _id: new ObjectID(),
+     product: productTwoId,
+     _user: userTwoId
+  }];
+
+  const populatePurchases = (done) => {
+    Purchase.remove({}).then(() => {
+      return Purchase.insertMany(purchases);
+    }).then(() => done());
+  };
+
+  module.exports = {products,
+                    populateProducts,
+                    purchases,
+                    populatePurchases,
+                    users,
+                    populateUsers};
