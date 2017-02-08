@@ -143,4 +143,14 @@ module.exports = function(app) {
       });
     });
   });
+
+  app.get('/orders', requireAuth, (req, res) => {
+    Order.find({
+      _user: req.user._id
+    }).then((orders) => {res.send({orders})
+    }, (err) => {
+      res.status(400).send(err);
+    })
+  });
+
 }
