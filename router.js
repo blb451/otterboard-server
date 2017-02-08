@@ -61,7 +61,6 @@ module.exports = function(app) {
   });
 
   app.get('/purchases', requireAuth, (req, res) => {
-
     Purchase.find({
       _user: req.user._id
     }).populate('_product').then((purchases) => {res.send({purchases})
@@ -101,7 +100,7 @@ module.exports = function(app) {
         return res.status(404).send();
       }
       res.send({purchase});
-    }).cathc((err) => {
+    }).catch((err) => {
       res.status(400).send();
     });
   });
@@ -127,5 +126,21 @@ module.exports = function(app) {
   });
 
   // ORDER
-
+  app.post('/orders', requireAuth, (req, res) => {
+    Purchase.find({
+      _user: req.user._id
+    }).then((purchases) => {
+      var order = new Order({
+        items: purchases,
+        _user: req.user._id
+      });
+      order.save().then((doc) => {
+        res.send(doc);
+        Purchase.remove({_user: req.user.id}, (err) => {
+          if(err) throw err});
+      }, (err) => {
+        res.status(400).send(err);
+      });
+    });
+  });
 }

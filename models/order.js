@@ -1,12 +1,8 @@
 var mongoose = require('mongoose')
 
 var Order = mongoose.model('Order', {
-  purchases: {
+  items: {
     type: Array,
-    required: true
-  },
-  cost: {
-    type: Number,
     required: true
   },
   _user: {
