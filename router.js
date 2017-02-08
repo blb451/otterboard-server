@@ -47,10 +47,9 @@ module.exports = function(app) {
 
   // PURCHASE
   app.post('/purchases', requireAuth, (req, res) => {
-    const productId = req.body.id
     var purchase = new Purchase({
       _product: req.body.productid,
-      _user: req.user.id,
+      _user: req.body.userid,
       quantity: 1
     });
     purchase.save().then((doc) => {
