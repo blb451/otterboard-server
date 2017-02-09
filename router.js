@@ -115,8 +115,7 @@ module.exports = function(app) {
     }
 
     Purchase.findOneAndUpdate({_id: id,
-                              _user: req.user._id,
-                              _product: req.product._id},
+                              _user: req.user._id},
                               {$set: quantity},
                               {new: true}).then((purchase) => {
     if (!purchase) { return res.status(404).send(); }
