@@ -11,6 +11,8 @@ const {Purchase} = require('./models/purchase')
 const {Order} = require('./models/order')
 const {User} = require('./models/user')
 
+const {ObjectID} = require('mongodb');
+
 module.exports = function(app) {
   app.get('/', requireAuth, function(req, res) {
     res.send({ message: "authenticated view" });
@@ -68,15 +70,15 @@ module.exports = function(app) {
     })
   });
 
-  app.get('purchases/:id', requireAuth, (req, res) => {
+  app.get('/purchases/:id', requireAuth, (req, res) => {
     var id = req.params.id;
-    if (!Object.isvalid(id)) {
+    if (!ObjectID.isValid(id)) {
       return res.status(404).send();
     }
     Purchase.findOne({
       _id: id,
       _user: req.user._id
-    }).then((purchase) => {
+    }).populate('_product').then((purchase) => {
       if (!purchase) {
         return res.status(404).send();
       }
@@ -86,15 +88,15 @@ module.exports = function(app) {
     });
   });
 
-  app.delete('purchases/:id', requireAuth, (req, res) => {
+  app.delete('/purchases/:id', requireAuth, (req, res) => {
     var id = req.params.id;
-    if (!Object.isvalid(id)) {
+    if (!ObjectID.isValid(id)) {
       return res.status(404).send();
     }
     Purchase.findOneAndRemove({
       _id: id,
       _user: req.user._id
-    }).populate('_product').then((purchase) => {
+    }).then((purchase) => {
       if (!purchase) {
         return res.status(404).send();
       }
