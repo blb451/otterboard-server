@@ -132,6 +132,16 @@ module.exports = function(app) {
     });
   });
 
+  //custom route to delete all purchases from a specific user
+  app.delete('/deletepurchases', requireAuth, (req, res) => {
+    Purchase.remove({
+      _user: req.user._id
+    }).populate('_product').then((purchases) => {res.send({purchases})
+    }, (err) => {
+      res.status(400).send(err);
+    })
+  });
+
   // ORDER
   app.post('/orders', requireAuth, (req, res) => {
     Purchase.find({
