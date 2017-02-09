@@ -49,6 +49,13 @@ module.exports = function(app) {
 
   // PURCHASE
   app.post('/purchases', requireAuth, (req, res) => {
+    Purchase.findOne({ _product: req.body.productid}, function(err, existingProduct) {
+       if (err) { return next(err); }
+       console.log(existingProduct);
+      if (existingProduct) {
+        return res.status(422).send({ error: 'Product already added' });
+      }
+    });
     var purchase = new Purchase({
       _product: req.body.productid,
       _user: req.user._id,
